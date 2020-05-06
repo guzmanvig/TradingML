@@ -5,11 +5,11 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 
-from Agent import Agent
-from DQN import DQN
-from Environment import CartPoleEnvManager
+from Agent_Cartpole import Agent
+from DQN_Cartpole import DQN
+from Environment_Cartpole import CartPoleEnvManager
 from Experience import Experience, extract_tensors
-from QValues import QValues
+from QValues_Cartpole import QValues
 from ReplayMemory import ReplayMemory
 from Strategy import EpsilonGreedyStrategy
 
@@ -54,7 +54,7 @@ def get_moving_average(period, values):
         return moving_avg.numpy()
 
 
-device = torch.device("cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 em = CartPoleEnvManager(device)
 strategy = EpsilonGreedyStrategy(eps_start, eps_end, eps_decay)
 agent = Agent(strategy, em.num_actions_available(), device)
