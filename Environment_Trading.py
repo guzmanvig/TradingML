@@ -9,8 +9,10 @@ from ImportData import get_data
 
 # We will divide the whole history in windows of fixed length.
 # Each window is an episode.
-# Length of the window in days.
-WINDOW_LENGTH = 30
+# Each window is divided in hours
+WINDOW_DAYS = 30
+# Length of the window in hours
+WINDOW_LENGTH = WINDOW_DAYS * 24
 # Amount to spend
 SPEND_AMOUNT = 100
 
@@ -23,12 +25,12 @@ class Actions(Enum):
 
 class TradingEnvironment():
     def __init__(self):
-        self.open_history, self.hours_history = get_data()
+        self.exchange_history, self.hours_history = get_data()
 
         # The current hour we are in, is the last element of the window
         self.current_window_end = WINDOW_LENGTH
 
-        self.current_bought = 0
+        self.old_exchange = 0
 
         self.has_window = True
 
@@ -36,7 +38,7 @@ class TradingEnvironment():
 
     # Moves the window so the last element is at the next 0 hour, and sets the state as waiting
     def reset(self):
-        self.current_bought = 0
+        self.old_exchange = 0
         found_window = False
         for i in range(self.current_window_end, len(self.hours_history)):
             if self.hours_history[i] == 0:
@@ -48,8 +50,9 @@ class TradingEnvironment():
 
     def take_action(self, action):
         if action == Actions.WAIT:
+            # TODO: chequear limites, y si se pasa, vender, dar reward negativo y terminar episodio
             # If at the end of the day and have bought, can't wait, have to sell
-            if self.hours_history[self.current_window_end] == 23 and self.current_bought != 0:
+            if self.hours_history[self.current_window_end] == 23 and self.old_exchange != 0:
                 raise ValueError("Have to sell what you bought at the end of the day")
             # Move one hour forward
             self.current_window_end += 1
@@ -60,33 +63,35 @@ class TradingEnvironment():
             return reward, done
 
         if action == Actions.BUY:
-            if self.current_bought != 0:
+            if self.old_exchange != 0:
                 raise ValueError("Can't buy, already bought")
             # If at the end of the day, can't buy
             if self.hours_history[self.current_window_end] == 23:
                 raise ValueError("Can't buy at the end of the day")
             # Calculate how much we bought
-            self.current_bought = SPEND_AMOUNT / self.open_history[self.current_window_end]
+            self.old_exchange = self.exchange_history[self.current_window_end]
             self.current_window_end += 1
-            reward = - SPEND_AMOUNT
+            reward = 0
             done = False
             return reward, done
 
         if action == Actions.SELL:
-            if self.current_bought == 0:
+            if self.old_exchange == 0:
                 raise ValueError("Trying to sell without buying first")
-            reward = self.current_bought * self.open_history[self.current_window_end]
+            reward = self.exchange_history[self.current_window_end] - self.old_exchange
             self.current_window_end += 1
-            self.current_bought = 0
+            self.old_exchange = 0
             # End episode if sell
+            # TODO: terminar el episodio?
             done = True
             return reward, done
 
     def get_state(self):
-        return self.current_bought, self.open_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end]
+        state = 0 if self.old_exchange == 0 else 1
+        return self.old_exchange, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end]
 
     def get_possible_actions(self):
-        if self.current_bought == 0:
+        if self.old_exchange == 0:
             if self.hours_history[self.current_window_end] == 23:
                 return [Actions.WAIT]
             else:
