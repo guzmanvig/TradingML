@@ -20,6 +20,6 @@ class AgentTrading():
             with torch.no_grad():
                 # TODO: get all the probablities for all the actions and pick the one with with the greatest posiblity that is included in the possible actions
                 # TODO: how do you know which probability corresponds to a state?
-                return policy_net(state)  # Exploit
+                return policy_net(state)  # Exploit maximo
 
 
