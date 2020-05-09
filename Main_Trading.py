@@ -7,6 +7,7 @@ from Agent_Trading import AgentTrading
 from DQN_Trading import DQN
 from Environment_Trading import TradingEnvironment
 from Experience import Experience, extract_tensors
+from Plotter import plot
 from ReplayMemory import ReplayMemory
 from Strategy import EpsilonGreedyStrategy
 
@@ -63,7 +64,7 @@ while environment.has_episodes():
 
         if done:
             episode_rewards.append(reward)
-            # TODO: plot rewards
+            plot(episode_rewards, 100)
             break
 
     if episode_number % target_update == 0:
