@@ -94,6 +94,9 @@ class TradingEnvironment():
         return self.old_exchange, self.old_time, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH + 1:self.current_window_end + 1], \
                self.hours_history[self.current_window_end - WINDOW_LENGTH + 1:self.current_window_end + 1]
 
+    def get_windows_length(self):
+        return WINDOW_LENGTH
+
     def get_possible_actions(self):
         if self.old_exchange == 0:
             if self.hours_history[self.current_window_end] == 23:

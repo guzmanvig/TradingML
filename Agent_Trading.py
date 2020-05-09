@@ -24,7 +24,7 @@ class AgentTrading():
                 # Get the actions that can be taken in the current state
                 possible_actions = self.environment.get_possible_actions()
                 # Get the Q values for all the actions using the DQN
-                values = policy_net(DQN.convert_to_tensor(state)).numpy()[0]
+                values = policy_net(DQN.convert_to_tensor(state,self.device)).numpy()[0]
                 # Store the Q values with their corresponding actions in a dictionary
                 action_values = [
                     {'action': Actions.WAIT, 'Qvalue': values[0]},
