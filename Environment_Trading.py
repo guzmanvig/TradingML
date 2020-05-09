@@ -25,7 +25,7 @@ class Actions(Enum):
 
 class TradingEnvironment():
     def __init__(self):
-        self.exchange_history, self.hours_history = get_data()
+        self.exchange_history, self.hours_history = get_data("CSV")
 
         # The current hour we are in, is the last element of the window
         self.current_window_end = WINDOW_LENGTH - 1
