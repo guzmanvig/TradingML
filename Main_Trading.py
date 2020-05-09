@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 import QValues_Trading
 from Agent_Trading import AgentTrading
-from DQN_Trading import DQNTrading
+from DQN_Trading import DQN
 from Environment_Trading import TradingEnvironment
 from Experience import Experience, extract_tensors
 from ReplayMemory import ReplayMemory
@@ -26,8 +26,8 @@ strategy = EpsilonGreedyStrategy(eps_start, eps_end, eps_decay)
 agent = AgentTrading(strategy, environment, device)
 memory = ReplayMemory(memory_size)
 # TODO: Code the DQN
-policy_net = DQNTrading(environment.get_screen_height(), environment.get_screen_width()).to(device)
-target_net = DQNTrading(environment.get_screen_height(), environment.get_screen_width()).to(device)
+policy_net = DQN(environment.get_screen_height(), environment.get_screen_width()).to(device)
+target_net = DQN(environment.get_screen_height(), environment.get_screen_width()).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 optimizer = optim.Adam(params=policy_net.parameters(), lr=lr)

@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class DQNTrading(nn.Module):
+class DQN(nn.Module):
     def __init__(self, img_height, img_width):
         super().__init__()
         self.fc1 = nn.Linear(in_features=img_height*img_width*3, out_features=24)
@@ -15,3 +15,7 @@ class DQNTrading(nn.Module):
         t = F.relu(self.fc2(t))
         t = self.out(t)
         return t
+
+    @staticmethod
+    def convert_to_tensor(states):
+        return

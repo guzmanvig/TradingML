@@ -6,7 +6,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from Agent_Cartpole import Agent
-from DQN_Cartpole import DQN
+from DQN_Cartpole import DQNCartpole
 from Environment_Cartpole import CartPoleEnvManager
 from Experience import Experience, extract_tensors
 from QValues_Cartpole import QValues
@@ -60,8 +60,8 @@ strategy = EpsilonGreedyStrategy(eps_start, eps_end, eps_decay)
 agent = Agent(strategy, em.num_actions_available(), device)
 memory = ReplayMemory(memory_size)
 
-policy_net = DQN(em.get_screen_height(), em.get_screen_width()).to(device)
-target_net = DQN(em.get_screen_height(), em.get_screen_width()).to(device)
+policy_net = DQNCartpole(em.get_screen_height(), em.get_screen_width()).to(device)
+target_net = DQNCartpole(em.get_screen_height(), em.get_screen_width()).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 optimizer = optim.Adam(params=policy_net.parameters(), lr=lr)

@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class DQN(nn.Module):
+class DQNCartpole(nn.Module):
     def __init__(self, img_height, img_width):
         super().__init__()
         self.fc1 = nn.Linear(in_features=img_height*img_width*3, out_features=24)

@@ -18,9 +18,9 @@ SPEND_AMOUNT = 100
 
 
 class Actions(Enum):
-    WAIT = 1
-    BUY = 2
-    SELL = 3
+    WAIT = 0
+    BUY = 1
+    SELL = 2
 
 
 class TradingEnvironment():
