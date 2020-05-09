@@ -18,4 +18,6 @@ class DQN(nn.Module):
 
     @staticmethod
     def convert_to_tensor(states):
-        return
+        dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        states_gpu = states.to(dev)
+        return states_gpu

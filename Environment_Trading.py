@@ -31,6 +31,7 @@ class TradingEnvironment():
         self.current_window_end = WINDOW_LENGTH
 
         self.old_exchange = 0
+        self.old_time = -1
 
         self.has_window = True
 
@@ -70,6 +71,7 @@ class TradingEnvironment():
                 raise ValueError("Can't buy at the end of the day")
             # Calculate how much we bought
             self.old_exchange = self.exchange_history[self.current_window_end]
+            self.old_time = self.hours_history[self.current_window_end]
             self.current_window_end += 1
             reward = 0
             done = False
@@ -81,6 +83,7 @@ class TradingEnvironment():
             reward = self.exchange_history[self.current_window_end] - self.old_exchange
             self.current_window_end += 1
             self.old_exchange = 0
+            self.old_time = -1
             # End episode if sell
             # TODO: terminar el episodio?
             done = True
@@ -88,7 +91,8 @@ class TradingEnvironment():
 
     def get_state(self):
         state = 0 if self.old_exchange == 0 else 1
-        return self.old_exchange, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end]
+        return self.old_exchange, self.old_time, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end], \
+               self.hours_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end]
 
     def get_possible_actions(self):
         if self.old_exchange == 0:
