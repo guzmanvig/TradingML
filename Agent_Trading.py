@@ -16,7 +16,8 @@ class AgentTrading():
         rate = self.strategy.get_exploration_rate(self.current_step)
         self.current_step += 1
 
-        if rate > random.random():  # Explore
+        if True:
+        #if rate > random.random():  # Explore
             action = random.choice(self.environment.get_possible_actions())
             return action
         else:  # Exploit

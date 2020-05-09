@@ -12,7 +12,8 @@ from ImportData import get_data
 # Each window is divided in hours
 WINDOW_DAYS = 30
 # Length of the window in hours
-WINDOW_LENGTH = WINDOW_DAYS * 24
+#WINDOW_LENGTH = WINDOW_DAYS * 24
+WINDOW_LENGTH = 3
 # Amount to spend
 SPEND_AMOUNT = 100
 
@@ -25,17 +26,17 @@ class Actions(Enum):
 
 class TradingEnvironment():
     def __init__(self):
-        self.exchange_history, self.hours_history = get_data()
+        #self.exchange_history, self.hours_history = get_data()
+        self.exchange_history = [1, 3, 5, 7, 9, 2, 4, 6, 8]
+        self.hours_history = [15, 23, 0, 15, 23, 0, 15, 23, 0]
 
         # The current hour we are in, is the last element of the window
-        self.current_window_end = WINDOW_LENGTH
+        self.current_window_end = WINDOW_LENGTH - 1
 
         self.old_exchange = 0
         self.old_time = -1
 
         self.has_window = True
-
-        self.reset()
 
     # Moves the window so the last element is at the next 0 hour, and sets the state as waiting
     def reset(self):
@@ -91,8 +92,8 @@ class TradingEnvironment():
 
     def get_state(self):
         state = 0 if self.old_exchange == 0 else 1
-        return self.old_exchange, self.old_time, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end], \
-               self.hours_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end]
+        return self.old_exchange, self.old_time, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH + 1:self.current_window_end + 1], \
+               self.hours_history[self.current_window_end - WINDOW_LENGTH + 1:self.current_window_end + 1]
 
     def get_possible_actions(self):
         if self.old_exchange == 0:

@@ -11,7 +11,7 @@ Experience = namedtuple(
 def extract_tensors(experiences):
     # Convert batch of Experiences to Experience of batches
     batch = Experience(*zip(*experiences))
-
+    # TODO: convert batch.state and the others to tensors!
     t1 = torch.cat(batch.state)
     t2 = torch.cat(batch.action)
     t3 = torch.cat(batch.reward)

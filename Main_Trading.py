@@ -10,7 +10,7 @@ from Experience import Experience, extract_tensors
 from ReplayMemory import ReplayMemory
 from Strategy import EpsilonGreedyStrategy
 
-batch_size = 256
+batch_size = 2
 gamma = 0.999
 eps_start = 1
 eps_end = 0.01
@@ -26,11 +26,12 @@ strategy = EpsilonGreedyStrategy(eps_start, eps_end, eps_decay)
 agent = AgentTrading(strategy, environment, device)
 memory = ReplayMemory(memory_size)
 # TODO: Code the DQN
-policy_net = DQN(environment.get_screen_height(), environment.get_screen_width()).to(device)
-target_net = DQN(environment.get_screen_height(), environment.get_screen_width()).to(device)
-target_net.load_state_dict(policy_net.state_dict())
-target_net.eval()
-optimizer = optim.Adam(params=policy_net.parameters(), lr=lr)
+policy_net = None
+target_net = None
+#target_net.load_state_dict(policy_net.state_dict())
+#target_net.eval()
+#optimizer = optim.Adam(params=policy_net.parameters(), lr=lr)
+optimizer = None
 
 episode_rewards = []
 episode_number = 0
