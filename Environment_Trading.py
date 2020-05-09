@@ -28,7 +28,7 @@ class TradingEnvironment():
         self.exchange_history, self.hours_history = get_data()
 
         # The current hour we are in, is the last element of the window
-        self.current_window_end = WINDOW_LENGTH
+        self.current_window_end = WINDOW_LENGTH - 1
 
         self.old_exchange = 0
         self.old_time = -1
@@ -91,8 +91,8 @@ class TradingEnvironment():
 
     def get_state(self):
         state = 0 if self.old_exchange == 0 else 1
-        return self.old_exchange, self.old_time, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end], \
-               self.hours_history[self.current_window_end - WINDOW_LENGTH:self.current_window_end]
+        return self.old_exchange, self.old_time, state, self.exchange_history[self.current_window_end - WINDOW_LENGTH + 1:self.current_window_end + 1], \
+               self.hours_history[self.current_window_end - WINDOW_LENGTH + 1:self.current_window_end + 1]
 
     def get_possible_actions(self):
         if self.old_exchange == 0:
