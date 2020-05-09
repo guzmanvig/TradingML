@@ -1,3 +1,5 @@
+from math import pi, sin
+
 import duka.app.app as import_ticks_method
 from duka.core.utils import TimeFrame
 import datetime
@@ -12,11 +14,27 @@ def import_data():
     import_ticks_method(Assets,start_date,end_date,1,TimeFrame.H1,"./data",True)
 
 
-def get_data():
-    data = pd.read_csv("./data/EURUSD-2020_01_01-2020_05_01.csv")  # Time, open, close, high, low
-    open = [float(data["open"][i]) for i in range(len(data["open"]))]  # Use the open price
-    hour = [int(data["time"][i][11:13]) for i in range(len(data["time"]))]  # Save only the hour
-    return open, hour
+def get_data(type):
+    if type == "CSV":
+        data = pd.read_csv("./data/EURUSD-2020_01_01-2020_05_01.csv")  # Time, open, close, high, low
+        exchange = [float(data["open"][i]) for i in range(len(data["open"]))]  # Use the open price
+        hour = [int(data["time"][i][11:13]) for i in range(len(data["time"]))]  # Save only the hour
+        return exchange, hour
+    if type == "SIN":
+        return create_sin_mock_data()
+
+
+def create_sin_mock_data():
+    exchanges = []
+    hours = []
+    for i in range(40000):
+        hour = i % 24
+        x = hour * 2 * pi / 24
+        exchange = 1 + sin(x)
+        exchanges.append(exchange)
+        hours.append(hour)
+    return exchanges, hours
+
 
 # get_data()
 # import_data()

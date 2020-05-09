@@ -7,6 +7,7 @@ from Agent_Trading import AgentTrading
 from DQN_Trading import DQN
 from Environment_Trading import TradingEnvironment
 from Experience import Experience, extract_tensors
+from Plotter import plot
 from ReplayMemory import ReplayMemory
 from Strategy import EpsilonGreedyStrategy
 
@@ -26,12 +27,13 @@ strategy = EpsilonGreedyStrategy(eps_start, eps_end, eps_decay)
 agent = AgentTrading(strategy, environment, device)
 memory = ReplayMemory(memory_size)
 # TODO: Code the DQN
-policy_net = None
-target_net = None
-#target_net.load_state_dict(policy_net.state_dict())
-#target_net.eval()
-#optimizer = optim.Adam(params=policy_net.parameters(), lr=lr)
-optimizer = None
+
+policy_net = DQN(environment.get_windows_lenght()).to(device)
+target_net = DQN(environment.get_windows_lenght()).to(device)
+target_net.load_state_dict(policy_net.state_dict())
+target_net.eval()
+optimizer = optim.Adam(params=policy_net.parameters(), lr=lr)
+
 
 episode_rewards = []
 episode_number = 0
@@ -64,7 +66,7 @@ while environment.has_episodes():
 
         if done:
             episode_rewards.append(reward)
-            # TODO: plot rewards
+            plot(episode_rewards, 100)
             break
 
     if episode_number % target_update == 0:
