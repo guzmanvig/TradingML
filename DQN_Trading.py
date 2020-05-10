@@ -11,7 +11,7 @@ class DQN(nn.Module):
         self.out = nn.Linear(in_features=32, out_features=3)
 
     def forward(self, t):
-        t = t.flatten(start_dim=1)
+        t = t.flatten(start_dim=1).float()
         t = F.relu(self.fc1(t))
         t = F.relu(self.fc2(t))
         t = self.out(t)
@@ -20,6 +20,10 @@ class DQN(nn.Module):
     @staticmethod
     def convert_to_tensor(states,device):
         old_exchange, old_time, state, exchange_history, hours_history = states
-        states_tensor = torch.tensor([[old_exchange, state, exchange_history],[old_time, state, hours_history]])
+        first_row = [old_exchange, state]
+        first_row.extend(exchange_history)
+        second_row = [old_time, state]
+        second_row.extend(hours_history)
+        states_tensor = torch.tensor([[first_row, second_row]])
         states_gpu = states_tensor.to(device)
         return states_gpu

@@ -16,8 +16,7 @@ class AgentTrading():
         rate = self.strategy.get_exploration_rate(self.current_step)
         self.current_step += 1
 
-        if True:
-        #if rate > random.random():  # Explore
+        if rate > random.random():  # Explore
             action = random.choice(self.environment.get_possible_actions())
             return action
         else:  # Exploit
@@ -25,7 +24,7 @@ class AgentTrading():
                 # Get the actions that can be taken in the current state
                 possible_actions = self.environment.get_possible_actions()
                 # Get the Q values for all the actions using the DQN
-                values = policy_net(DQN.convert_to_tensor(state,self.device)).numpy()[0]
+                values = policy_net(DQN.convert_to_tensor(state, self.device)).numpy()[0]
                 # Store the Q values with their corresponding actions in a dictionary
                 action_values = [
                     {'action': Actions.WAIT, 'Qvalue': values[0]},
@@ -35,11 +34,11 @@ class AgentTrading():
                 # Sort the dictionary in descending order of Qvalues
                 action_values.sort(key=lambda x: x['Qvalue'], reverse=True)
                 # Pop the action with the greatest !value until find one that is possible
-                best_action = action_values.pop(0)
+                best_action = action_values.pop(0)['action']
                 while best_action not in possible_actions:
                     if len(possible_actions) == 0:
                         raise ValueError("No possible actions to be taken")
-                    best_action = action_values.pop(0)
+                    best_action = action_values.pop(0)['action']
                 # Return the best action possible
                 return best_action
 

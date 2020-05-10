@@ -4,7 +4,6 @@ import duka.app.app as import_ticks_method
 from duka.core.utils import TimeFrame
 import datetime
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def import_data():
@@ -21,13 +20,21 @@ def get_data(type):
         hour = [int(data["time"][i][11:13]) for i in range(len(data["time"]))]  # Save only the hour
         return exchange, hour
     if type == "SIN":
-        return create_sin_mock_data()
+        return create_sin_data()
+    if type == "MOCK":
+        return create_mock_data()
 
 
-def create_sin_mock_data():
+def create_mock_data():
+    exchanges = [1, 3, 5, 7, 9, 2, 4, 6, 8]
+    hours = [15, 23, 0, 15, 23, 0, 15, 23, 0]
+    return exchanges, hours
+
+
+def create_sin_data():
     exchanges = []
     hours = []
-    for i in range(40000):
+    for i in range(200000):
         hour = i % 24
         x = hour * 2 * pi / 24
         exchange = 1 + sin(x)

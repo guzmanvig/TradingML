@@ -1,10 +1,5 @@
 from enum import Enum
 
-import gym
-import torch
-import numpy as np
-import torchvision.transforms as T
-
 from ImportData import get_data
 
 # We will divide the whole history in windows of fixed length.
@@ -12,10 +7,8 @@ from ImportData import get_data
 # Each window is divided in hours
 WINDOW_DAYS = 30
 # Length of the window in hours
-#WINDOW_LENGTH = WINDOW_DAYS * 24
-WINDOW_LENGTH = 3
-# Amount to spend
-SPEND_AMOUNT = 100
+WINDOW_LENGTH = WINDOW_DAYS * 24
+# WINDOW_LENGTH = 3
 
 
 class Actions(Enum):
@@ -26,9 +19,10 @@ class Actions(Enum):
 
 class TradingEnvironment():
     def __init__(self):
-        #self.exchange_history, self.hours_history = get_data()
-        self.exchange_history = [1, 3, 5, 7, 9, 2, 4, 6, 8]
-        self.hours_history = [15, 23, 0, 15, 23, 0, 15, 23, 0]
+        data_type = "SIN"
+        self.exchange_history, self.hours_history = get_data(data_type)
+        print("\033[92m(Environment) Using data type: " + data_type)
+        print("\033[92m(Environment) Using windows length of: " + str(WINDOW_LENGTH))
 
         # The current hour we are in, is the last element of the window
         self.current_window_end = WINDOW_LENGTH - 1
@@ -59,7 +53,7 @@ class TradingEnvironment():
             # Move one hour forward
             self.current_window_end += 1
             # Give a reward of 0 for waiting
-            reward = 0
+            reward = float(0)
             # End the episode if at the end of the day
             done = self.hours_history[self.current_window_end] == 0
             return reward, done
@@ -74,14 +68,14 @@ class TradingEnvironment():
             self.old_exchange = self.exchange_history[self.current_window_end]
             self.old_time = self.hours_history[self.current_window_end]
             self.current_window_end += 1
-            reward = 0
+            reward = float(0)
             done = False
             return reward, done
 
         if action == Actions.SELL:
             if self.old_exchange == 0:
                 raise ValueError("Trying to sell without buying first")
-            reward = self.exchange_history[self.current_window_end] - self.old_exchange
+            reward = float(self.exchange_history[self.current_window_end] - self.old_exchange)
             self.current_window_end += 1
             self.old_exchange = 0
             self.old_time = -1
@@ -98,8 +92,8 @@ class TradingEnvironment():
     def get_windows_length(self):
         return WINDOW_LENGTH
 
-
     def get_possible_actions(self):
+        # IF CHANGING THIS, CHANGE IT ALSO IN QVALUES CLASS
         if self.old_exchange == 0:
             if self.hours_history[self.current_window_end] == 23:
                 return [Actions.WAIT]
