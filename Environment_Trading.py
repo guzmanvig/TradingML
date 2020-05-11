@@ -21,8 +21,8 @@ class TradingEnvironment():
     def __init__(self, repeat):
         data_type = "SIN"
         self.exchange_history, self.hours_history = get_data(data_type)
-        print("\033[92m(Environment) Using data type: " + data_type)
-        print("\033[92m(Environment) Using windows length of: " + str(WINDOW_LENGTH))
+        print("(Environment) Using data type: " + data_type)
+        print("(Environment) Using windows length of: " + str(WINDOW_LENGTH))
 
         # The current hour we are in, is the last element of the window
         self.current_window_end = WINDOW_LENGTH - 1
@@ -54,12 +54,14 @@ class TradingEnvironment():
             # If at the end of the day and have bought, can't wait, have to sell
             if self.hours_history[self.current_window_end] == 23 and self.old_exchange != 0:
                 raise ValueError("Have to sell what you bought at the end of the day")
+            done = self.hours_history[self.current_window_end] == 23
             # Move one hour forward
             self.current_window_end += 1
+            if self.current_window_end >= len(self.hours_history):
+                self.current_window_end = 0
             # Give a reward of 0 for waiting
             reward = float(0)
             # End the episode if at the end of the day
-            done = False
             return reward, done
 
         if action == Actions.BUY:

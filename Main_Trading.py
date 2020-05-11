@@ -20,7 +20,9 @@ eps_decay = 0.001
 target_update = 10
 memory_size = 50000
 lr = 0.001
-num_episodes = 1000
+num_episodes = 500
+
+print("\033[92m(Main) Using batch size of: " + str(batch_size))
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 environment = TradingEnvironment(True)
@@ -48,7 +50,6 @@ def get_average(values, period):
         return 0
 
 
-print("\033[92m(Main) Using batch size of: " + str(batch_size))
 while not input("\033[94mCheck the parameters above and enter any key to start the training: "):
     a = 0
 
