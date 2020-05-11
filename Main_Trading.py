@@ -53,7 +53,7 @@ while not input("\033[94mCheck the parameters above and enter any key to start t
     a = 0
 
 # while environment.has_episodes():
-for i in range(1000):
+for i in range(100000):
     episode_number += 1
     environment.reset()
     state = environment.get_state()

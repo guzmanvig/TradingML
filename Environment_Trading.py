@@ -59,8 +59,7 @@ class TradingEnvironment():
             # Give a reward of 0 for waiting
             reward = float(0)
             # End the episode if at the end of the day
-            # TODO: if the last hour of the hours history is a 23, then this will crash
-            done = self.hours_history[self.current_window_end] == 0
+            done = False
             return reward, done
 
         if action == Actions.BUY:
