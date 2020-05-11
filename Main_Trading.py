@@ -23,7 +23,7 @@ lr = 0.001
 num_episodes = 1000
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-environment = TradingEnvironment()
+environment = TradingEnvironment(True)
 strategy = EpsilonGreedyStrategy(eps_start, eps_end, eps_decay)
 agent = AgentTrading(strategy, environment, device)
 memory = ReplayMemory(memory_size)
@@ -52,7 +52,8 @@ print("\033[92m(Main) Using batch size of: " + str(batch_size))
 while not input("\033[94mCheck the parameters above and enter any key to start the training: "):
     a = 0
 
-while environment.has_episodes():
+# while environment.has_episodes():
+for i in range(1000):
     episode_number += 1
     environment.reset()
     state = environment.get_state()

@@ -18,7 +18,7 @@ class Actions(Enum):
 
 
 class TradingEnvironment():
-    def __init__(self):
+    def __init__(self, repeat):
         data_type = "SIN"
         self.exchange_history, self.hours_history = get_data(data_type)
         print("\033[92m(Environment) Using data type: " + data_type)
@@ -31,6 +31,7 @@ class TradingEnvironment():
         self.old_time = -1
 
         self.has_window = True
+        self.repeat = repeat
 
     # Moves the window so the last element is at the next 0 hour, and sets the state as waiting
     def reset(self):
@@ -43,6 +44,9 @@ class TradingEnvironment():
                 break
         if not found_window:
             self.has_window = False
+            if self.repeat:
+                self.current_window_end = WINDOW_LENGTH - 1
+                self.reset()
 
     def take_action(self, action):
         if action == Actions.WAIT:
@@ -55,6 +59,7 @@ class TradingEnvironment():
             # Give a reward of 0 for waiting
             reward = float(0)
             # End the episode if at the end of the day
+            # TODO: if the last hour of the hours history is a 23, then this will crash
             done = self.hours_history[self.current_window_end] == 0
             return reward, done
 

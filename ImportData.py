@@ -26,15 +26,15 @@ def get_data(type):
 
 
 def create_mock_data():
-    exchanges = [1, 3, 5, 7, 9, 2, 4, 6, 8]
-    hours = [15, 23, 0, 15, 23, 0, 15, 23, 0]
+    exchanges = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    hours = [0, 10, 15, 23, 0, 10, 15, 23, 0, 15, 23]
     return exchanges, hours
 
 
 def create_sin_data():
     exchanges = []
     hours = []
-    for i in range(200000):
+    for i in range(10000):
         hour = i % 24
         x = hour * 2 * pi / 24
         exchange = 1 + sin(x)
