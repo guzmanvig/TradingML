@@ -20,9 +20,10 @@ eps_decay = 0.001
 target_update = 10
 memory_size = 50000
 lr = 0.001
-num_episodes = 500
 
 print("\033[92m(Main) Using batch size of: " + str(batch_size))
+print("(Main) Using learning rate of: " + str(lr))
+print("(Main) Updating target nn for episodes: " + str(target_update))
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 environment = TradingEnvironment(True)
@@ -50,8 +51,8 @@ def get_average(values, period):
         return 0
 
 
-while not input("\033[94mCheck the parameters above and enter any key to start the training: "):
-    a = 0
+input("\033[94mCheck the parameters above and enter any key to start the training: ")
+
 
 # while environment.has_episodes():
 for i in range(100000):
@@ -66,7 +67,6 @@ for i in range(100000):
         next_state = environment.get_state()
         memory.push(Experience(DQN.convert_to_tensor(state, device), torch.tensor([action.value]).to(device),
                                DQN.convert_to_tensor(next_state, device), torch.tensor([reward]).to(device)))
-        state = next_state
 
         if memory.can_provide_sample(batch_size):
             experiences = memory.sample(batch_size)

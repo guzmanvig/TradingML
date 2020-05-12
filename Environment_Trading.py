@@ -58,7 +58,7 @@ class TradingEnvironment():
             # Move one hour forward
             self.current_window_end += 1
             if self.current_window_end >= len(self.hours_history):
-                self.current_window_end = 0
+                self.current_window_end = WINDOW_LENGTH - 1
             # Give a reward of 0 for waiting
             reward = float(0)
             # End the episode if at the end of the day
@@ -83,6 +83,9 @@ class TradingEnvironment():
                 raise ValueError("Trying to sell without buying first")
             reward = float(self.exchange_history[self.current_window_end] - self.old_exchange)
             self.current_window_end += 1
+            if self.current_window_end >= len(self.hours_history):
+                self.current_window_end = WINDOW_LENGTH - 1
+
             self.old_exchange = 0
             self.old_time = -1
             # End episode if sell
