@@ -5,7 +5,7 @@ from ImportData import get_data
 # We will divide the whole history in windows of fixed length.
 # Each window is an episode.
 # Each window is divided in hours
-WINDOW_DAYS = 30
+WINDOW_DAYS = 1
 # Length of the window in hours
 WINDOW_LENGTH = WINDOW_DAYS * 24
 # WINDOW_LENGTH = 3
@@ -81,7 +81,7 @@ class TradingEnvironment():
         if action == Actions.SELL:
             if self.old_exchange == 0:
                 raise ValueError("Trying to sell without buying first")
-            reward = float(self.exchange_history[self.current_window_end] - self.old_exchange)
+            reward = float(self.exchange_history[self.current_window_end] - self.old_exchange) * 10
             self.current_window_end += 1
             if self.current_window_end >= len(self.hours_history):
                 self.current_window_end = WINDOW_LENGTH - 1

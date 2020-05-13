@@ -32,6 +32,13 @@ class QValuesTrading():
             state = next_states[i]
             buy_state = state[0][1]
             state_hour = state[1][-1]
-            adapt_qvalues(buy_state, state_hour, qvalues, i)
-        return qvalues.max(dim=1)[0].detach() #.view(len(next_states), -1)
+
+            # If the episode was done, put 0 on all the Qvalues so they are not take in into account in bellman
+            if buy_state == -1:
+                qvalues[i][0] = 0
+                qvalues[i][1] = 0
+                qvalues[i][2] = 0
+            else:
+                adapt_qvalues(buy_state, state_hour, qvalues, i)
+        return qvalues.max(dim=1)[0].detach()
 

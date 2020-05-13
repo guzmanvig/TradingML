@@ -12,14 +12,14 @@ from ReplayMemory import ReplayMemory
 from Strategy import EpsilonGreedyStrategy
 
 
-batch_size = 256
+batch_size = 32
 gamma = 0.999
 eps_start = 1
 eps_end = 0.01
-eps_decay = 0.001
-target_update = 10
+eps_decay = 0.0005
+target_update = 200
 memory_size = 50000
-lr = 0.001
+lr = 0.0001
 
 print("\033[92m(Main) Using batch size of: " + str(batch_size))
 print("(Main) Using learning rate of: " + str(lr))
@@ -64,7 +64,13 @@ for i in range(100000):
         action = agent.select_action(state, policy_net)
         reward, done = environment.take_action(action)
         episode_reward += reward
-        next_state = environment.get_state()
+        if not done:
+            next_state = environment.get_state()
+            state = next_state
+        else:
+            # If the episode was done, create a fake next state that indicate that is done
+            next_state = (0.0, 0.0, -1.0, [0.0] * len(state[3]), [0.0] * len(state[4]))
+
         memory.push(Experience(DQN.convert_to_tensor(state, device), torch.tensor([action.value]).to(device),
                                DQN.convert_to_tensor(next_state, device), torch.tensor([reward]).to(device)))
 
@@ -82,7 +88,11 @@ for i in range(100000):
 
         if done:
             episode_rewards.append(reward)
-            rewards_average.append(get_average(episode_rewards, 100))
+            average = get_average(episode_rewards, 100)
+            rewards_average.append(average)
+            if average > 9 and batch_size != 256:
+                print("Changing batch")
+                batch_size = 256
             plot(episode_rewards, rewards_average)
             break
 
